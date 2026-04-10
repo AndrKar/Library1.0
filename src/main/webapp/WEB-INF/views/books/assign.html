@@ -1,10 +1,101 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <a href="/">🏠 На главную</a>
+    <br/>
+    <br/>
+    <meta charset="UTF-8">
+    <title>Выдача книги</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .book-info {
+            background-color: #e8f4f8;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 15px;
+            color: #2196F3;
+            text-decoration: none;
+        }
+        .error {
+            color: red;
+            margin-bottom: 15px;
+        }
+        h2 {
+            color: #333;
+        }
+    </style>
 </head>
 <body>
-$END$
+
+<div class="container">
+    <h2>📖 Выдача книги</h2>
+
+
+    <div class="book-info">
+        <p><strong>Книга:</strong> <span th:text="${book.title}">Название книги</span></p>
+        <p><strong>Автор:</strong> <span th:text="${book.author}">Автор</span></p>
+        <p><strong>Год:</strong> <span th:text="${book.year}">Год</span></p>
+        <p><strong>Статус:</strong>
+            <span style="color: green">✅ Свободна</span>
+        </p>
+    </div>
+
+    <form th:method="post" th:action="@{/books/{id}/assign(id=${book.id})}">
+        <label for="personId">Выберите читателя:</label>
+        <select id="personId" name="personId" required>
+            <option value="">-- Выберите из списка --</option>
+            <option th:each="person : ${people}"
+                    th:value="${person.id}"
+                    th:text="${person.name}">
+            </option>
+        </select>
+
+        <button type="submit">✅ Выдать книгу</button>
+    </form>
+
+    <br/>
+    <a href="/books" class="back-link">← Назад к списку книг</a>
+</div>
+
 </body>
 </html>
