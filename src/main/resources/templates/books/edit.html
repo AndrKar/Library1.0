@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Редактирование</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .nav-links {
+            margin-bottom: 20px;
+        }
+        .nav-links a {
+            margin-right: 15px;
+            text-decoration: none;
+            color: #007bff;
+        }
+        h2 {
+            margin-top: 0;
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            background: #ffc107;
+            color: #333;
+            cursor: pointer;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+        input[type="submit"]:hover {
+            background: #e0a800;
+        }
+        .btn-back {
+            display: inline-block;
+            margin-top: 15px;
+            color: #007bff;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<div class="nav-links">
+    <a href="/">🏠 На главную</a>
+    <a href="/books">📚 Книги</a>
+    <a href="/people">👥 Читатели</a>
+</div>
+
+<div class="card">
+    <h2>✏️ Редактирование книги</h2>
+
+    <form th:method="post" th:action="@{/books/{id}(id=${book.id})}" th:object="${book}">
+        <input type="hidden" name="_method" value="patch"/>
+
+        <label>Название:</label>
+        <input type="text" th:field="*{title}" required/>
+
+        <label>Автор:</label>
+        <input type="text" th:field="*{author}" required/>
+
+        <label>Год:</label>
+        <input type="number" th:field="*{year}" required/>
+
+        <input type="submit" value="💾 Сохранить изменения"/>
+    </form>
+
+    <a href="/books" class="btn-back">← Назад</a>
+</div>
+</body>
+</html>
