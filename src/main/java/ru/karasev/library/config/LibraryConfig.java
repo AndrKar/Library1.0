@@ -62,7 +62,7 @@ public class LibraryConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/images/**")
-                .addResourceLocations("/images/");
+                .addResourceLocations("classpath:/static/images/");
     }
 
     @Bean
@@ -70,20 +70,20 @@ public class LibraryConfig implements WebMvcConfigurer {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("org.postgresql.Driver");
 
-        // Пробуем получить URL в правильном формате
-        String dbUrl = System.getenv("JDBC_DATABASE_URL");
+        // Пробуем получить URL из Spring стандартных переменных
+        String dbUrl = environment.getProperty("spring.datasource.url");
         if (dbUrl == null || dbUrl.isEmpty()) {
-            dbUrl = System.getenv("DATABASE_URL");
-            if (dbUrl != null && !dbUrl.isEmpty() && !dbUrl.startsWith("jdbc:")) {
-                dbUrl = "jdbc:" + dbUrl;
-            }
+            dbUrl = System.getenv("SPRING_DATASOURCE_URL");
         }
 
         if (dbUrl != null && !dbUrl.isEmpty()) {
-            // Railway
             dataSource.setUrl(dbUrl);
-            dataSource.setUsername(System.getenv("PGUSER"));
-            dataSource.setPassword(System.getenv("PGPASSWORD"));
+            dataSource.setUsername(environment.getProperty("spring.datasource.username"));
+            dataSource.setPassword(environment.getProperty("spring.datasource.password"));
+            if (dataSource.getUsername() == null) {
+                dataSource.setUsername(System.getenv("SPRING_DATASOURCE_USERNAME"));
+                dataSource.setPassword(System.getenv("SPRING_DATASOURCE_PASSWORD"));
+            }
             System.out.println("=== CONNECTING TO RAILWAY DB ===");
             System.out.println("URL: " + dbUrl);
         } else {
