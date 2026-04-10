@@ -70,22 +70,13 @@ public class LibraryConfig implements WebMvcConfigurer {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("org.postgresql.Driver");
 
-        // Пробуем получить URL из Spring стандартных переменных
-        String dbUrl = environment.getProperty("spring.datasource.url");
-        if (dbUrl == null || dbUrl.isEmpty()) {
-            dbUrl = System.getenv("SPRING_DATASOURCE_URL");
-        }
-
-        if (dbUrl != null && !dbUrl.isEmpty()) {
-            dataSource.setUrl(dbUrl);
-            dataSource.setUsername(environment.getProperty("spring.datasource.username"));
-            dataSource.setPassword(environment.getProperty("spring.datasource.password"));
-            if (dataSource.getUsername() == null) {
-                dataSource.setUsername(System.getenv("SPRING_DATASOURCE_USERNAME"));
-                dataSource.setPassword(System.getenv("SPRING_DATASOURCE_PASSWORD"));
-            }
+        // Сначала пробуем Railway переменные
+        String railwayUrl = System.getenv("BD_URL");
+        if (railwayUrl != null && !railwayUrl.isEmpty()) {
+            dataSource.setUrl(railwayUrl);
+            dataSource.setUsername(System.getenv("BD_USERNAME"));
+            dataSource.setPassword(System.getenv("BD_PASSWORD"));
             System.out.println("=== CONNECTING TO RAILWAY DB ===");
-            System.out.println("URL: " + dbUrl);
         } else {
             // Локально
             dataSource.setUrl(Objects.requireNonNull(environment.getProperty("bd.url")));
