@@ -70,16 +70,21 @@ public class LibraryConfig implements WebMvcConfigurer {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("org.postgresql.Driver");
 
-        // Сначала пробуем Railway переменные
-        String railwayUrl = System.getenv("BD_URL");
+        // Пробуем подключиться к Railway (через переменные окружения)
+        String railwayUrl = System.getenv("DATABASE_URL");
+
         if (railwayUrl != null && !railwayUrl.isEmpty()) {
+            // Добавляем префикс jdbc: если его нет
+            if (!railwayUrl.startsWith("jdbc:")) {
+                railwayUrl = "jdbc:" + railwayUrl;
+            }
             dataSource.setUrl(railwayUrl);
-            dataSource.setUsername(System.getenv("BD_USERNAME"));
-            dataSource.setPassword(System.getenv("BD_PASSWORD"));
+            dataSource.setUsername(System.getenv("PGUSER"));
+            dataSource.setPassword(System.getenv("PGPASSWORD"));
             System.out.println("=== CONNECTING TO RAILWAY DB ===");
         } else {
-            // Локально
-            dataSource.setUrl(Objects.requireNonNull(environment.getProperty("bd.url")));
+            // Локальная разработка (из database.properties)
+            dataSource.setUrl(environment.getProperty("bd.url"));
             dataSource.setUsername(environment.getProperty("bd.username"));
             dataSource.setPassword(environment.getProperty("bd.password"));
             System.out.println("=== CONNECTING TO LOCAL DB ===");
